@@ -1,4 +1,8 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-export default nextConfig;
+// next.config.mjs
+export default {
+    experimental: {
+      appDir: true,  // Enable the app directory feature (if you are using the "app" directory in your project)
+    },
+    reactStrictMode: true,  // Enable React strict mode for better development experience
+  };
+  
