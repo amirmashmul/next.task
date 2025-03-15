@@ -12,14 +12,13 @@ import SearchBar from "../search/SearchBar";
 
 export default function UsersTable({ users }) {
   const dispatch = useDispatch();
-  const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleRowClick = (user) => {
     dispatch(setSelectedUser(user));
     dispatch(toggleModal());
   };
 
-  // Filter users by name or email based on the search query
   const filteredUsers = users.filter((user) => {
     const nameMatch = user.name.toLowerCase().includes(searchQuery.toLowerCase());
     const emailMatch = user.email.toLowerCase().includes(searchQuery.toLowerCase());
@@ -27,6 +26,11 @@ export default function UsersTable({ users }) {
   });
 
   const columns = [
+    {
+      header: "id",
+      accessor: "id",
+      Cell: ({ row }) => <span>{row.id}</span>,
+    },
     {
       header: "Name",
       accessor: "name",
@@ -36,6 +40,7 @@ export default function UsersTable({ users }) {
       header: "Email",
       accessor: "email",
       Cell: ({ row }) => <span>{row.email}</span>,
+
     },
     {
       header: "Username",
@@ -45,16 +50,20 @@ export default function UsersTable({ users }) {
   ];
 
   return (
-    <div className="p-[60px]">
-      {/* Search Bar */}
-      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
-
-      {/* Table */}
-      <Table
-        columns={columns}
-        data={filteredUsers}
-        onRowClick={handleRowClick}
-      />
+    <div className="p-[20px] my-[50px] flex justify-center items-center">
+     <div className="flex flex-col">
+      <SearchBar
+       searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery} 
+        />
+      <div className="bg-white mt-2  rounded-lg shadow-lg overflow-hidden">
+        <Table
+          columns={columns}
+          data={filteredUsers}
+          onRowClick={handleRowClick}
+        />
+      </div>
+      </div>
     </div>
   );
 }
