@@ -1,46 +1,31 @@
-
 "use client";
 
 import { useState } from "react";
 
-//redux
+// Redux
 import { useDispatch } from "react-redux";
 import { setSelectedUser, toggleModal } from "@/lib/redux/userSlice";
 
-
-//components
-import Table from "@/components/common/Table";
+// Components
+import Table from "@/components/users/table/Table";
+import SearchBar from "../search/SearchBar";
 
 export default function UsersTable({ users }) {
   const dispatch = useDispatch();
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
 
   const handleRowClick = (user) => {
     dispatch(setSelectedUser(user));
     dispatch(toggleModal());
   };
 
-  const sortedUsers = [...users].sort((a, b) => {
-    if (sortConfig.key) {
-      if (a[sortConfig.key] < b[sortConfig.key]) {
-        return sortConfig.direction === "asc" ? -1 : 1;
-      }
-      if (a[sortConfig.key] > b[sortConfig.key]) {
-        return sortConfig.direction === "asc" ? 1 : -1;
-      }
-    }
-    return 0;
+  // Filter users by name or email based on the search query
+  const filteredUsers = users.filter((user) => {
+    const nameMatch = user.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const emailMatch = user.email.toLowerCase().includes(searchQuery.toLowerCase());
+    return nameMatch || emailMatch;
   });
 
-  const requestSort = (key) => {
-    let direction = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    }
-    setSortConfig({ key, direction });
-  };
-
-  // Define columns for the Table component
   const columns = [
     {
       header: "Name",
@@ -60,11 +45,15 @@ export default function UsersTable({ users }) {
   ];
 
   return (
-    <div>
+    <div className="p-[60px]">
+      {/* Search Bar */}
+      <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+
+      {/* Table */}
       <Table
         columns={columns}
-        data={sortedUsers}
-        onRowClick={handleRowClick} // Pass the row click handler
+        data={filteredUsers}
+        onRowClick={handleRowClick}
       />
     </div>
   );
